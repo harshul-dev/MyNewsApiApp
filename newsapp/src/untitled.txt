@@ -1,0 +1,58 @@
+const MovieHouse = () => {
+  const [movies, setMovies] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('popularity-desc');
+  const [selectedGenre, setSelectedGenre] = useState('');
+  const [genres, setGenres] = useState([]);
+  const [expandedMovieId, setExpandedMovieId] = useState(null);
+
+  useEffect(() => {
+    // Fetch genres when component mounts
+    const fetchGenres = async () => {
+      try {
+        const response = await axios.get('https://api.themoviedb.org/3/discover/movie/', {
+          params: {
+            api_key: 'fce995076a5c678654b30cc97d6b0c20',
+            sort_by : sortBy,
+            page : 1,
+            with_genres : selectedGenre,
+            query: searchQuery,
+          },
+        });
+        setMovies(response.data.genres);
+      } catch (error) {
+        console.error('Error fetching genres:', error);
+      }
+    };
+
+    fetchGenres();
+  }, []);
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSearchSubmit = async () => {
+    try {
+      const response = await axios.get(
+        'https://api.themoviedb.org/3/search/movie',
+        {
+          params: {
+            api_key: 'fce995076a5c678654b30cc97d6b0c20',
+            query: searchQuery,
+            sort_by: sortBy,
+            with_genres: selectedGenre,
+          }
+        }
+      );
+      setMovies(response.data.results);
+      console.log(response.data.results); 
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+
+
+
+  https://media.istockphoto.com/id/871234518/photo/yellow-cartoon-robot-thinking-about-something.jpg?s=1024x1024&w=is&k=20&c=FJkKHGgsVBf6XBma5pFE_CJj8ZYRaJ2o9laZpBgVdvQ=
